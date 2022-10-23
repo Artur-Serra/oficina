@@ -5,7 +5,6 @@ from funcoes.routers import arduino
 
 def create_app() -> FastAPI:
     app = FastAPI()
-    #app.router.redirect_slashes = True
 
     app.include_router(
         arduino.router,
