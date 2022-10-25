@@ -1,11 +1,13 @@
+from typing import Optional
+
 import serial
 from time import sleep
 
 
 class Comandos():
-    ler_led = b'1'
-    ler_botao = b'2'
-    not_led = b'3'
+    ler_led = b'a'
+    ler_botao = b'b'
+    not_led = b'c'
     blink_x = b'4'
 
 
@@ -26,15 +28,21 @@ class Arduino:
     def fecha_conexao(self, ser):
         ser.close()
 
-    def envia_comando(self, conexao, comando):
-        conexao.write(comando)
+    def envia_comando(self, comando, numero):
+        if comando == Comandos.blink_x:
+            self.conexao.write(bytes(numero, 'utf-8'))
+        else:
+            self.conexao.write(comando)
 
-    def comunicacao(self, route):
-        conexao = self.abre_conexao(baudrate=115200, com='COM5')
-        # self.envia_comando(conexao=conexao, comando=route)
-        conexao.write(route)
-        resposta = conexao.read()
-        self.fecha_conexao(ser=conexao)
+    def comunicacao(self, route, numero):
+        # conexao = self.abre_conexao(baudrate=115200, com='COM5')
+        self.envia_comando(comando=route, numero=numero)
+        # conexao.write(route)
+        resposta = self.conexao.readline()
+        # self.fecha_conexao(ser=conexao)
         resposta = str(resposta)
-        print(resposta.split("'")[1])
+        print(resposta.split("'")[1][:-4])
         return resposta
+
+    def __init__(self):
+        self.conexao = self.abre_conexao(baudrate=9600, com='COM7')
